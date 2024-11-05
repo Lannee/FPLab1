@@ -6,6 +6,7 @@ jobs:
   prob19tests:
     if: |
       !contains(github.event.head_commit.message, '[skip prob19 ci]')
+      && !contains(github.event.head_commit.message, '[skip ci]')
     name: Prob 19 Tests 
     runs-on: ubuntu-latest
     steps:
@@ -26,6 +27,7 @@ jobs:
   prob12tests:
     if: |
       !contains(github.event.head_commit.message, '[skip prob12 ci]')
+      && !contains(github.event.head_commit.message, '[skip ci]')
     name: Prob 12 Tests
     runs-on: ubuntu-latest
     steps:
