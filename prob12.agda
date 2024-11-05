@@ -19,21 +19,40 @@ open import Relation.Unary using (Pred)
 open import Agda.Primitive using (Level)
 open import Codata.Guarded.Stream as Stream
 open import Relation.Nullary.Decidable using (does)
+open import Data.Float using (⌊_⌋ ; fromℕ ; sqrt)
+open import Data.Integer using (∣_∣)
+open import Data.Maybe using (just ; nothing)
 
 module prob12 where
 
+flooredSqrt : Nat → Nat 
+flooredSqrt n with ⌊ sqrt $ fromℕ n ⌋
+... | just i = ∣ i ∣
+... | nothing = 0
+
 numberOfDivisorsFilter : Nat → Nat
-numberOfDivisorsFilter n = foldl (λ acc _ → suc acc) 0 $ filterᵇ (λ {Fin.zero → false ; x@(Fin.suc _) → n % toℕ x == 0}) $ allFin (suc n)
+numberOfDivisorsFilter n with flooredSqrt n
+... | zero = zero
+... | sqrtn@(suc _) = (λ e → 2 * e - (if n % sqrtn == 0 then 1 else 0)) $
+    foldl (λ acc _ → suc acc) 0 $ filterᵇ (λ {Fin.zero → false ; x@(Fin.suc _) → n % toℕ x == 0}) $ allFin (suc sqrtn)
 
 numberOfDivisorsMap : Nat → Nat
-numberOfDivisorsMap n = List.sum $ List.map (λ {Fin.zero → 0 ; x@(Fin.suc _) → if n % toℕ x == zero then 1 else 0}) $ allFin (suc n)
+numberOfDivisorsMap n with flooredSqrt n
+... | zero = zero
+... | sqrtn@(suc _) = (λ e → 2 * e - (if n % sqrtn == 0 then 1 else 0)) $
+    List.sum $ List.map (λ {Fin.zero → 0 ; x@(Fin.suc _) → if n % toℕ x == zero then 1 else 0}) $ allFin (suc sqrtn)
 
 numberOfDivisorsStream : Nat → Nat
-numberOfDivisorsStream n = Vec.sum $ Vec.map (λ {zero → 0 ; x@(suc _) → if n % x == zero then 1 else 0}) $ take (suc n) $ iterate suc 0
+numberOfDivisorsStream n with flooredSqrt n
+... | zero = zero
+... | sqrtn@(suc _) = (λ e → 2 * e - (if n % sqrtn == 0 then 1 else 0)) $
+    Vec.sum $ Vec.map (λ {zero → 0 ; x@(suc _) → if n % x == zero then 1 else 0}) $ take (suc sqrtn) $ iterate suc 0
 
 numberOfDivisorsRecursive : Nat → Nat
 numberOfDivisorsRecursive zero = zero
-numberOfDivisorsRecursive n@(suc n-1) = inner n n
+numberOfDivisorsRecursive n@(suc _) with flooredSqrt n
+... | zero = zero
+... | sqrtn@(suc _) = 2 * inner n sqrtn - (if n % sqrtn == 0 then 1 else 0)
     where 
         inner : (n : Nat) {{_ : NonZero n}} → Nat → Nat
         inner n zero = zero
@@ -41,7 +60,9 @@ numberOfDivisorsRecursive n@(suc n-1) = inner n n
 
 numberOfDivisorsTailRecursive : Nat → Nat
 numberOfDivisorsTailRecursive zero = zero
-numberOfDivisorsTailRecursive n@(suc n-1) = inner n n 0
+numberOfDivisorsTailRecursive n@(suc _) with flooredSqrt n
+... | zero = zero
+... | sqrtn@(suc _) = 2 * inner n sqrtn 0 - (if n % sqrtn == 0 then 1 else 0)
     where 
         inner : (n : Nat) {{_ : NonZero n}} → Nat → Nat → Nat
         inner n zero acc = acc
@@ -57,3 +78,4 @@ findTringularNumber countDivisors divisors = go 1 2
             where
                 newTriag : Nat
                 newTriag = prevTriag + nextInd
+                
