@@ -6,8 +6,8 @@ open import Data.Nat using (_%_ ; _≤_ ; NonZero ; _^_ ; _>_ ;
 open import Data.Nat.Show
 open import Data.Bool using (Bool ; true ; false ; if_then_else_ ; _∧_)
 open import Data.List using (List ; [] ; _∷_ ; find)
+open import Data.Vec.Bounded.Base using (Vec≤)
 open import Data.Vec as Vec using (filter ; length ; allFin ; map ; count ; foldl′ ; sum)
-open import Data.Vec.Bounded.Base using (toVec)
 open import Function.Base using (_$_)
 open import Relation.Unary using (Decidable)
 open import Relation.Binary using (DecidableEquality)
@@ -62,7 +62,7 @@ tailRecursiveAlgorithm = tailRecursiveAlgorithmHelper 1Jan1901 31Dec2000 0
 streamAlgorithm : Nat
 streamAlgorithm = 
     foldl′ (λ acc _ → suc acc) 0                                   $ 
-    toVec                                                          $ 
+    Data.Vec.Bounded.Base.Vec≤.vec                                 $ 
     filter (λ e → dayOfWeek e day.≟ day.Sun)                       $ 
     take (monthsBetween 1Jan1901 31Dec2000) (iterate _+1M 1Jan1901)
 
