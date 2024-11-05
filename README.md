@@ -53,7 +53,7 @@ numberOfDivisorsFilter : Nat → Nat
 numberOfDivisorsFilter n with flooredSqrt n
 ... | zero = zero
 ... | sqrtn@(suc _) = (λ e → 2 * e - (if n % sqrtn == 0 then 1 else 0)) $
-    foldl (λ acc _ → suc acc) 0 $ filterᵇ (λ {Fin.zero → false ; x@(Fin.suc _) → n % toℕ x == 0}) $ allFin (suc sqrtn)
+    foldl (λ acc _ → suc acc) 0 $ filterᵇ (λ {zero → false ; x@(suc _) → n % x == 0}) $ range (suc sqrtn)
 ```
 
 3) Генерация с использованием отображения (map)
@@ -62,7 +62,7 @@ numberOfDivisorsMap : Nat → Nat
 numberOfDivisorsMap n with flooredSqrt n
 ... | zero = zero
 ... | sqrtn@(suc _) = (λ e → 2 * e - (if n % sqrtn == 0 then 1 else 0)) $
-    List.sum $ List.map (λ {Fin.zero → 0 ; x@(Fin.suc _) → if n % toℕ x == zero then 1 else 0}) $ allFin (suc sqrtn)
+    List.sum $ List.map (λ {zero → 0 ; x@(suc _) → if n % x == zero then 1 else 0}) $ range (suc sqrtn)
 ```
 
 4) Генерация с использованием бесконечной последовательности (Stream)

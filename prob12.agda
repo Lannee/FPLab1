@@ -30,17 +30,21 @@ flooredSqrt n with ⌊ sqrt $ fromℕ n ⌋
 ... | just i = ∣ i ∣
 ... | nothing = 0
 
+range : Nat → List Nat
+range zero = []
+range n@(suc n-1) = n ∷ range n-1
+
 numberOfDivisorsFilter : Nat → Nat
 numberOfDivisorsFilter n with flooredSqrt n
 ... | zero = zero
 ... | sqrtn@(suc _) = (λ e → 2 * e - (if n % sqrtn == 0 then 1 else 0)) $
-    foldl (λ acc _ → suc acc) 0 $ filterᵇ (λ {Fin.zero → false ; x@(Fin.suc _) → n % toℕ x == 0}) $ allFin (suc sqrtn)
+    foldl (λ acc _ → suc acc) 0 $ filterᵇ (λ {zero → false ; x@(suc _) → n % x == 0}) $ range (suc sqrtn)
 
 numberOfDivisorsMap : Nat → Nat
 numberOfDivisorsMap n with flooredSqrt n
 ... | zero = zero
 ... | sqrtn@(suc _) = (λ e → 2 * e - (if n % sqrtn == 0 then 1 else 0)) $
-    List.sum $ List.map (λ {Fin.zero → 0 ; x@(Fin.suc _) → if n % toℕ x == zero then 1 else 0}) $ allFin (suc sqrtn)
+    List.sum $ List.map (λ {zero → 0 ; x@(suc _) → if n % x == zero then 1 else 0}) $ range (suc sqrtn)
 
 numberOfDivisorsStream : Nat → Nat
 numberOfDivisorsStream n with flooredSqrt n
@@ -78,4 +82,6 @@ findTringularNumber countDivisors divisors = go 1 2
             where
                 newTriag : Nat
                 newTriag = prevTriag + nextInd
-                
+
+main : IO ⊤
+main = putStrLn $ show $ findTringularNumber numberOfDivisorsFilter 500             
