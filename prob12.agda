@@ -82,6 +82,3 @@ findTringularNumber countDivisors divisors = go 1 2
             where
                 newTriag : Nat
                 newTriag = prevTriag + nextInd
-
-main : IO ⊤
-main = putStrLn $ show $ findTringularNumber numberOfDivisorsFilter 500             
