@@ -2,10 +2,8 @@
 
 open import Agda.Builtin.Nat using (Nat ; _==_)
 open import Data.List using (List ; [] ; _∷_ ; length)
--- open import IO.Primitive.Finite using (putStrLn)
 open import Data.Bool.Base using (Bool ; true ; false ; if_then_else_ ; _∧_)
 open import Data.String.Base using (String ; unlines ; unwords ; _++_ ; lines ; _<+>_)
--- open import Agda.Builtin.IO using (IO)
 open import IO
 open import Agda.Builtin.Unit using (⊤)
 open import Function using (_$_)
@@ -75,11 +73,9 @@ main : Main
 main = run $ do
   putStrLn "PROB 19 TESTS:"
   prob19successful ← runProb19Test
-  -- putStrLn "\nPROB 19 TESTS " <+> (if prob19successful then "SUCCEED" else "FAILED" <+> " !")
 
   putStrLn "\nPROB 12 TESTS:"
   prob12successful ← runProb12Test
-  -- putStrLn "\nPROB 12 TESTS " <+> (if prob12successful then "SUCCEED" else "FAILED" <+> " !")
 
   let successful = prob19successful ∧ prob12successful
   putStrLn (if successful then "\nALL TEST PASSED" else "\nSOME TESTS FAILED" <+> " !")

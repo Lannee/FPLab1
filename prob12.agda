@@ -47,8 +47,6 @@ numberOfDivisorsTailRecursive n@(suc n-1) = inner n n 0
         inner n zero acc = acc
         inner n div@(suc div-1) acc = inner n div-1 $ acc + (if n % div == 0 then 1 else 0)
 
-
--- Вычисление треугольного числа
 triangleNumber : (n : Nat) .{{_ : NonZero n}} → Nat
 triangleNumber n = (n * (suc n)) / 2
 

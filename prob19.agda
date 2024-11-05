@@ -7,7 +7,7 @@ open import Data.Nat.Show
 open import Data.Bool using (Bool ; true ; false ; if_then_else_ ; _∧_)
 open import Data.List using (List ; [] ; _∷_ ; find)
 open import Data.Vec as Vec using (filter ; length ; allFin ; map ; count ; foldl′ ; sum)
-open import Data.Vec.Bounded using (toVec)
+open import Data.Vec.Bounded.Base using (toVec)
 open import Function.Base using (_$_)
 open import Relation.Unary using (Decidable)
 open import Relation.Binary using (DecidableEquality)
@@ -19,7 +19,6 @@ open import Agda.Builtin.String using (String)
 open import Codata.Guarded.Stream
 open import IO.Primitive.Finite using (putStrLn)
 open import Data.Fin using (Fin ; toℕ ; fromℕ<)
-
 
 open import date
 

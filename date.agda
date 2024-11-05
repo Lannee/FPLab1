@@ -86,21 +86,6 @@ module month where
     month -ℕ zero    = month
     month -ℕ (suc n) = (prevMonth month) -ℕ n
 
-
-    toFin : Month → Fin 12
-    toFin Jan = fromℕ< z<s
-    toFin Feb = fromℕ< (s<s z<s)
-    toFin Mar = fromℕ< (s<s (s<s z<s))
-    toFin Apr = fromℕ< (s<s (s<s (s<s z<s)))
-    toFin May = fromℕ< (s<s (s<s (s<s (s<s z<s))))
-    toFin Jun = fromℕ< (s<s (s<s (s<s (s<s (s<s z<s)))))
-    toFin Jul = fromℕ< (s<s (s<s (s<s (s<s (s<s (s<s z<s))))))
-    toFin Aug = fromℕ< (s<s (s<s (s<s (s<s (s<s (s<s (s<s z<s)))))))
-    toFin Sep = fromℕ< (s<s (s<s (s<s (s<s (s<s (s<s (s<s (s<s z<s))))))))
-    toFin Oct = fromℕ< (s<s (s<s (s<s (s<s (s<s (s<s (s<s (s<s (s<s z<s)))))))))
-    toFin Nov = fromℕ< (s<s (s<s (s<s (s<s (s<s (s<s (s<s (s<s (s<s (s<s z<s))))))))))
-    toFin Dec = fromℕ< (s<s (s<s (s<s (s<s (s<s (s<s (s<s (s<s (s<s (s<s (s<s z<s)))))))))))
-
     toℕ : Month → Nat
     toℕ Jan = 0
     toℕ Feb = 1
@@ -212,27 +197,14 @@ module day where
     day -ℕ zero    = day
     day -ℕ (suc n) = (prevDay day) -ℕ n
 
-    show : Day → String
-    show Mon = "Mon"
-    show Tue = "Tue"
-    show Wed = "Wed"
-    show Thu = "Thu"
-    show Fri = "Fri"
-    show Sat = "Sat"
-    show Sun = "Sun"
-
-
--- record Date {y : Nat} {m : Month} (dMax : month.daysInMonth month year) : Set where
 record Date : Set where
     constructor _,_,_
     field
         year : Nat
         month : month.Month
-        -- day : Fin dMax
         day : Nat
         
 dayOfWeek : Date → day.Day
--- dayOfWeek (year , month , day) = day.Mon day.+ℕ (Data.Fin.toℕ day) + (13 * ((month.toℕ month) + 2) / 5) + year + (year / 4) - (year / 100) + (year / 400)
 dayOfWeek (year , month , day) = day.Mon day.+ℕ (day) Nat.+ (13 * ((month.toℕ month) Nat.+ 2) / 5) Nat.+ year Nat.+ (year / 4) Nat.- (year / 100) Nat.+ (year / 400)
 
 _+1M : Date → Date
