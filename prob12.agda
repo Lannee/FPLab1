@@ -48,7 +48,7 @@ numberOfDivisorsTailRecursive n@(suc n-1) = inner n n 0
         inner n div@(suc div-1) acc = inner n div-1 $ acc + (if n % div == 0 then 1 else 0)
 
 
-{-# NON_TERMINATING #-}
+{-# TERMINATING #-}
 findTringularNumber : (Nat → Nat) → Nat → Nat
 findTringularNumber countDivisors divisors = go 1 2
     where
