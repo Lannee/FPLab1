@@ -3,10 +3,10 @@ on:
   push:
     branches: ['master']
 jobs:
-  check:
+  prob19tests:
     if: |
-      !contains(github.event.head_commit.message, '[skip ci]')
-    name: Tests 
+      !contains(github.event.head_commit.message, '[skip prob19 ci]')
+    name: Prob 19 Tests 
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -17,8 +17,28 @@ jobs:
           agda-stdlib-version: '2.0'
 
       - run: |
-          agda --compile-dir=build/ -c test.agda
+          agda --compile-dir=build/ -c prob19test.agda
         working-directory: .
 
-      - run: ./build/test
+      - run: ./build/prob19test
+        working-directory: .
+
+  prob12tests:
+    if: |
+      !contains(github.event.head_commit.message, '[skip prob12 ci]')
+    name: Prob 12 Tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: wenkokke/setup-agda@v2
+        with:
+          agda-version: '2.6.4.3'
+          agda-stdlib-version: '2.0'
+
+      - run: |
+          agda --compile-dir=build/ -c prob12test.agda
+        working-directory: .
+
+      - run: ./build/prob12test
         working-directory: .

@@ -9,44 +9,15 @@ open import Agda.Builtin.Unit using (⊤)
 open import Function using (_$_)
 open import System.Exit using (exitSuccess ; exitFailure ; isFailure ; die)
 
-open import prob19
 open import prob12
 
-module test where
+module prob12test where
 
 Prob12CorrectResult : Nat
 Prob12CorrectResult = 76576500
 
-Prob19CorrectResult : Nat
-Prob19CorrectResult = 171
-
-
-runProb19Test : IO Bool
-runProb19Test = do
-    let recursiveAlgorithmSucceed     = (prob19.recursiveAlgorithm) == Prob19CorrectResult
-    putStrLn $ description recursiveAlgorithmSucceed     "Recursive method"
-
-    let tailRecursiveAlgorithmSucceed = (prob19.recursiveAlgorithm) == Prob19CorrectResult
-    putStrLn $ description tailRecursiveAlgorithmSucceed "Tail recursive method"
-
-    let filterAlgorithmSucceed        = (prob19.recursiveAlgorithm) == Prob19CorrectResult
-    putStrLn $ description filterAlgorithmSucceed        "Filter method"
-
-    let mapAlgorithmSucceed           = (prob19.recursiveAlgorithm) == Prob19CorrectResult
-    putStrLn $ description mapAlgorithmSucceed           "Map method"
-
-    let streamAlgorithmSucceed        = (prob19.recursiveAlgorithm) == Prob19CorrectResult
-    putStrLn $ description streamAlgorithmSucceed        "Stream method"
-
-    let testSucceed = recursiveAlgorithmSucceed ∧ tailRecursiveAlgorithmSucceed ∧ filterAlgorithmSucceed ∧ mapAlgorithmSucceed ∧ streamAlgorithmSucceed
-    if testSucceed then pure true else pure false
-
-    where
-        description : Bool → String → String
-        description result methodName = methodName <+> (if result then "SUCCEED" else "FAILLED")
-
-runProb12Test : IO Bool
-runProb12Test = do
+test : IO Bool
+test = do
     let recursiveAlgorithmSucceed     = (findTringularNumber numberOfDivisorsRecursive     500) == Prob12CorrectResult
     putStrLn $ description recursiveAlgorithmSucceed     "Recursive method"
 
@@ -71,12 +42,6 @@ runProb12Test = do
 
 main : Main
 main = run $ do
-  putStrLn "PROB 19 TESTS:"
-  prob19successful ← runProb19Test
-
-  putStrLn "\nPROB 12 TESTS:"
-  prob12successful ← runProb12Test
-
-  let successful = prob19successful ∧ prob12successful
-  putStrLn (if successful then "\nALL TEST PASSED" else "\nSOME TESTS FAILED" <+> " !")
+  putStrLn "PROB 12 TESTS:"
+  successful ← test
   if successful then exitSuccess else exitFailure
