@@ -32,39 +32,33 @@ module prob19 where
 31Dec2000 : Date
 31Dec2000 = 2000 , month.Dec , 31
 
-
-daysInYear : Nat → Nat
-daysInYear y = if month.isLeapYear y then 366 else 365
-
-
 isSunday : day.Day → Bool
 isSunday day.Sun = true
 isSunday _ = false
 
-private
-    {-# NON_TERMINATING #-}
-    recursiveAlgorithmHelper : Date → Date → Nat
-    recursiveAlgorithmHelper start@(_ , _ , startDay) end = 
-        if start >ᵇ-Date end 
-        then 0
-        else if (isSunday $ dayOfWeek start) ∧ (startDay == 1)
-            then 1 + recursiveAlgorithmHelper (start +1D) end
-            else recursiveAlgorithmHelper (start +1D) end
-
-    {-# NON_TERMINATING #-}
-    tailRecursiveAlgorithmHelper : Date → Date → Nat → Nat
-    tailRecursiveAlgorithmHelper start@(_ , _ , startDay) end acc = 
-        if start >ᵇ-Date end 
-        then acc
-        else if (isSunday $ dayOfWeek start) ∧ (startDay == 1)
-            then tailRecursiveAlgorithmHelper (start +1D) end (suc acc)
-            else tailRecursiveAlgorithmHelper (start +1D) end acc
-
+{-# NON_TERMINATING #-}
 recursiveAlgorithm : Nat
 recursiveAlgorithm = recursiveAlgorithmHelper 1Jan1901 31Dec2000
+    where    
+        recursiveAlgorithmHelper : Date → Date → Nat
+        recursiveAlgorithmHelper start@(_ , _ , startDay) end = 
+            if start >ᵇ-Date end 
+            then 0
+            else if (isSunday $ dayOfWeek start) ∧ (startDay == 1)
+                then 1 + recursiveAlgorithmHelper (start +1D) end
+                else recursiveAlgorithmHelper (start +1D) end
 
+{-# NON_TERMINATING #-}
 tailRecursiveAlgorithm : Nat
 tailRecursiveAlgorithm = tailRecursiveAlgorithmHelper 1Jan1901 31Dec2000 0
+    where
+        tailRecursiveAlgorithmHelper : Date → Date → Nat → Nat
+        tailRecursiveAlgorithmHelper start@(_ , _ , startDay) end acc = 
+            if start >ᵇ-Date end 
+            then acc
+            else if (isSunday $ dayOfWeek start) ∧ (startDay == 1)
+                then tailRecursiveAlgorithmHelper (start +1D) end (suc acc)
+                else tailRecursiveAlgorithmHelper (start +1D) end acc
 
 streamAlgorithm : Nat
 streamAlgorithm = 
@@ -75,12 +69,3 @@ streamAlgorithm =
 
 mapAlgorithm : Nat
 mapAlgorithm = sum $ Vec.map (λ e → if isSunday $ dayOfWeek e then 1 else 0) $ Vec.map (λ m → 1Jan1901 +-months toℕ m) $ allFin $ monthsBetween 1Jan1901 31Dec2000
-
-main : IO ⊤
--- main = putStrLn $ day.show $ dayOfWeek (2023 , month.Jan , (fromℕ< (s<s z<s)))
--- main = putStrLn $ day.show $ dayOfWeek (2023 , month.Jan , 1)
-main = putStrLn $ show $ streamAlgorithm
--- main = putStrLn $ show $ recursiveAlgorithm
--- main = putStrLn $ show $ tailRecursiveAlgorithm
--- main = putStrLn $ show $ mapAlgorithm
--- main = putStrLn $ show $ monthsBetween 1Jan1901 1Jan2001
