@@ -1,19 +1,19 @@
 {-# OPTIONS --guardedness #-}
 
-open import Agda.Builtin.Nat using (Nat ; _==_ ; zero ; suc ; _+_ ; _<_ ; _*_)
-open import Data.Nat using (_%_ ; _≤_ ; NonZero ; _^_ ; _/_ ; _>?_)
+open import Agda.Builtin.Nat using (Nat ; _==_ ; zero ; suc ; _+_ ; _<_ ; _*_ ; _-_)
+open import Data.Nat using (_%_ ; _≤_ ; NonZero ; ≢-nonZero ; _^_ ; _/_ ; _>?_)
 open import Data.Nat.Show
 open import Data.Fin as Fin using (toℕ ; suc ; zero)
 open import Data.Bool using (Bool ; true ; false ; if_then_else_)
 open import Data.List as List using (List ; [] ; _∷_ ; length ; filterᵇ ; find ; allFin ; map ; sum ; foldl)
 open import Data.Vec as Vec using (map ; sum)
-open import Function.Base using (_$_)
+open import Function.Base using (_$_ ; _∘_)
 open import Relation.Unary using (Decidable)
 open import Agda.Builtin.IO using (IO)
 open import Agda.Builtin.Unit using (⊤)
 open import IO.Primitive.Finite using (putStrLn)
 open import Agda.Builtin.String using (String)
-open import Codata.Guarded.Stream as S using (Stream ; nats ; map ; head ; tail ; _∷_ ; _[_])
+open import Codata.Guarded.Stream as S using (Stream ; nats ; map ; head ; tail ; _∷_)
 open import Data.Vec.Bounded using (toVec)
 open import Relation.Unary using (Pred)
 open import Agda.Primitive using (Level)
@@ -47,16 +47,13 @@ numberOfDivisorsTailRecursive n@(suc n-1) = inner n n 0
         inner n zero acc = acc
         inner n div@(suc div-1) acc = inner n div-1 $ acc + (if n % div == 0 then 1 else 0)
 
-triangleNumber : (n : Nat) .{{_ : NonZero n}} → Nat
-triangleNumber n = (n * (suc n)) / 2
-
 
 {-# NON_TERMINATING #-}
 findTringularNumber : (Nat → Nat) → Nat → Nat
-findTringularNumber countDivisors divisors = go 1
+findTringularNumber countDivisors divisors = go 1 2
     where
-        go : (n : Nat) .{{_ : NonZero n}} → Nat
-        go n = 
-            if divisors < (countDivisors (triangleNumber n))
-            then triangleNumber n
-            else go (suc n)
+        go : Nat → Nat → Nat
+        go prevTriag nextInd = if divisors < countDivisors newTriag then newTriag else go newTriag (suc nextInd)
+            where
+                newTriag : Nat
+                newTriag = prevTriag + nextInd
