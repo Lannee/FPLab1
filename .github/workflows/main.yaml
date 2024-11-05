@@ -1,7 +1,7 @@
 name: basic
 on:
   push:
-    branches: ['main']
+    branches: ['master']
 jobs:
   check:
     if: |
